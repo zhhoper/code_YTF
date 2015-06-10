@@ -23,10 +23,12 @@ tvar = pinv(inter_s + intra_s);
 tEig = eig(inter_s + intra_s);
 tdet_var = sum(log(tEig));
 
-numFaces = 60;
+DIM = size(inter_s, 1);
+
+numFaces = 100;
 for i = 1 : numFaces
     [allF(i).data, allG(i).data] = inv_covriance(inter_s, intra_s, i);
-    all_varData(i).data = (inter_s + intra_s) - i*inter_s*(allF(i).data + i*allG(i).data)*inter_s;
+    all_varData(i).data = i*inter_s*(allF(i).data + i*allG(i).data)*inter_s;
     tEig = eig(all_varData(i).data);
     all_varData(i).det = sum(log(tEig));
     all_pvarData(i).data = pinv(all_varData(i).data);
@@ -47,31 +49,42 @@ for i = 1 : num
     f2 = (f2 - repmat(meanFeature, num2, 1))*projection;
     
     if num2 > numFaces
-        [F, G] = inv_covriance(inter_s, intra_s, i);
-        varData = (inter_s + intra_s) - num2*inter_s*(F + num2*G)*inter_s;
-        pvarData = pinv(varData);
-        tEig = eig(varData);
-        detData = sum(log(tEig));
-        
+        [F2, G2] = inv_covriance(inter_s, intra_s, num2);
+        varData2 = num2*inter_s*(F2 + num2*G2)*inter_s;
+        pvarData2 = pinv(varData2);
     else
-        F = allF(m).data;
-        G = allG(m).data;
-        varData = all_varData(m).data;
-        pvarData = all_pvarData(m).data;
-        detData = all_varData(m).det;
+        F2 = allF(num2).data;
+        G2 = allG(num2).data;
+        varData2 = all_varData(num2).data;
+        pvarData2 = all_pvarData(num2).data;
     end
     
-    tmp = sum(f2,1);
-    meanData = (inter_s*(F + m*G)*tmp')';
+    if num1 > numFaces
+        [F1, G1] = inv_covriance(inter_s, intra_s, num1);
+        varData1 = num1*inter_s*(F1 + num1*G1)*inter_s;
+        pvarData1 = pinv(varData1);
+    else
+        F1 = allF(num2).data;
+        G1 = allG(num2).data;
+        varData1 = all_varData(num2).data;
+        pvarData1 = all_pvarData(num2).data;
+    end
+      
+    meanCondition = inter_s*(F2 + num2*G2)*sum(f2);
+    tmpf1 = f1 - repmat(meanCondition, num1, 1);
     
-    % wrongly computed
-    distance(i) = 0.5*f1*tvar*f1' - 0.5*(f1 - meanData)*pvarData*(f1 - meanData)'...
-        + tdet_var - detData;
-
-    % correctly computed
-%     distance(i) = f1*tvar*f1' - (f1 - meanData)*pvarData*(f1 - meanData)'...
-%         + tdet_var - detData;
+    t_inter_s = inter_s - varData2;
+    [tF2, tG2] = inv_covriance(t_inter_s, intra_s, num1);
     
+    tmp1 = trace(tmpf1'*tmpf1*tF2) + sum(tmpf1)*tG2*sum(tmpf1)';
+    tmp2 = trace(f1'*f1*F1) + sum(f1)*G1*sum(f1)';
+    
+    A1 = intra_s * t_inter_s + eye(DIM);
+    A2 = intra_s * inter_s + eye(DIM);
+    logDet1 = spec_determin(A1, num1);
+    logDet2 = spec_determin(A2, num2);
+    
+    distance.data(i) = tmp2 - tmp1 + logDet2 - logDet1;    
 end
 
 end
