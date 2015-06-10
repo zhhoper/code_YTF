@@ -29,11 +29,20 @@ for i = 1 : numValidation
         fprintf('Done!\n');
     end
     
-    fprintf('Get inter and intra variance...\n');
-    [inter_s, intra_s] = get_var_video(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
-    fprintf('Done!\n');
+    if exit('inter_s.mat', 'file') && exit('intra_s.mat', 'file') && ind
+        fprintf('Loading inter and intra variane...\n');
+        load('inter_s.mat');
+        load('inter_s.mat');
+        fprintf('Done!\n');
+    else
+        fprintf('Get inter and intra variance...\n');
+        [inter_s, intra_s] = get_var_video(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
+        fprintf('Done!\n');
+    end
     
-    ccc = 0;
+    [A, G] = get_AG(inter_s, intra_s);
+    
+    
 end
 
 
