@@ -54,7 +54,7 @@ end
 [V, D] = eig(covMatrix);
 tmpD = diag(D);
 indicator = 0;
-thr = 0.98;
+thr = 0.80;
 total = sum(tmpD);
 i = 1;
 

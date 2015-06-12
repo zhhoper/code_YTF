@@ -17,4 +17,4 @@ tmpB = A + (k-1)*eye(dim);
 D1 = eig(tmpA);
 D2 = eig(tmpB);
 
-det_x = (k-1)*sum(log(D1)) + sum(log(D2));
+det_x = (k-1)*sum(log(abs(D1))) + sum(log(abs(D2)));

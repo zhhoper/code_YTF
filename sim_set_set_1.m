@@ -1,4 +1,4 @@
-function distance = sim_point_set_1(pair, path, load_names, meanFeature, projection, inter_s, intra_s, type)
+function distance = sim_set_set_1(pair, path, load_names, meanFeature, projection, inter_s, intra_s, type)
 % distance = sim_point_set_1(pair, path, load_names, meanFeature, projection, inter_s, intra_s)
 %
 % This function is used to compute the point to set distance we defined. We
@@ -11,6 +11,7 @@ function distance = sim_point_set_1(pair, path, load_names, meanFeature, project
 % OUTPUT:
 % distance : the similarity score for every pair of data
 
+% What if we select some number of frames that best describe the joint face
 num = size(pair,1);
 distance.label = pair(:,3);
 distance.data = zeros(num,1);
@@ -32,6 +33,9 @@ for i = 1 : numFaces
 end
 
 inv_inter_s = pinv(inter_s);
+
+% select 10 frames for each video for verification.
+numSelect = 40;
 
 for i = 1 : num
     I1 = pair(i,1);
@@ -56,45 +60,64 @@ for i = 1 : num
     f1 = (f1 - repmat(meanFeature, num1, 1))*projection;
     f2 = (f2 - repmat(meanFeature, num2, 1))*projection;
     
-    if num2 > numFaces
-        [F2, G2] = inv_covariance(inter_s, intra_s, num2);
-        varData2 = num2*inter_s*(F2 + num2*G2)*inter_s;
+    joint_F = [f1;f2];
+    totalNum = num1 + num2;
+    [tmpF, tmpG] = inv_covariance(inter_s, intra_s, totalNum);
+    tmp_sum = sum(f1) + sum(f2);
+    meanF = (tmp_sum*tmpF' + totalNum*tmp_sum*tmpG')*inter_s';
+    %epson= (joint_F*tmpF' + repmat(tmp_sum, totalNum, 1)*tmpG')*intra_s';
+    
+    %intra_s = (epson - repmat(mean(epson,1), totalNum,1))'*(epson - repmat(mean(epson,1), totalNum,1))/totalNum;
+    
+    tmpIn1 = sum((f1 - repmat(meanF, num1,1)).^2,2);
+    tmpIn2 = sum((f2 - repmat(meanF, num2,1)).^2,2);
+    [~, In1] =sort(tmpIn1);
+    [~, In2] = sort(tmpIn2);
+    In1 = In1(end-numSelect+1:end);
+    In2 = In2(end-numSelect+1:end);
+    f1 = f1(In1,:);
+    f2 = f2(In2,:);
+    
+    ind = 1;
+    if numSelect > numFaces || ind
+        [F2, G2] = inv_covariance(inter_s, intra_s, numSelect);
+        varData2 = numSelect*inter_s*(F2 + numSelect*G2)*inter_s;
         %pvarData2 = pinv(varData2);
     else
-        F2 = allF(num2).data;
-        G2 = allG(num2).data;
-        varData2 = all_varData(num2).data;
+        F2 = allF(numSelect).data;
+        G2 = allG(numSelect).data;
+        varData2 = all_varData(numSelect).data;
         %pvarData2 = all_pvarData(num2).data;
     end
     
-    if num1 > numFaces
-        [F1, G1] = inv_covariance(inter_s, intra_s, num1);
+    if numSelect > numFaces || ind
+        [F1, G1] = inv_covariance(inter_s, intra_s, numSelect);
         %varData1 = num1*inter_s*(F1 + num1*G1)*inter_s;
         %pvarData1 = pinv(varData1);
     else
-        F1 = allF(num1).data;
-        G1 = allG(num1).data;
+        F1 = allF(numSelect).data;
+        G1 = allG(numSelect).data;
         %varData1 = all_varData(num2).data;
         %pvarData1 = all_pvarData(num2).data;
     end
     
-    meanCondition = inter_s*(F2 + num2*G2)*sum(f2)';
+    meanCondition = inter_s*(F2 + numSelect*G2)*sum(f2)';
     meanCondition = meanCondition';
-    center_f1 = f1 - repmat(meanCondition, num1, 1);
+    center_f1 = f1 - repmat(meanCondition, numSelect, 1);
     
     t_inter_s = inter_s - varData2;
-    [tF2, tG2] = inv_covariance(t_inter_s, intra_s, num1);
+    [tF2, tG2] = inv_covariance(t_inter_s, intra_s, numSelect);
     
     tmp1 = trace(center_f1*tF2*center_f1') + sum(center_f1)*tG2*sum(center_f1)';
     tmp2 = trace(f1*F1*f1') + sum(f1)*G1*sum(f1)';
     
-    eig1 = eig(t_inter_s);
-    eig2 = eig(inter_s);
-    
-    A1 = pinv(t_inter_s)*intra_s + eye(DIM);
-    A2 = inv_inter_s * intra_s + eye(DIM);
-    logDet1 = spec_determin(A1, num1) + num1*sum(log(abs(eig1)));
-    logDet2 = spec_determin(A2, num1) + num2*sum(log(abs(eig2)));
+%     eig1 = eig(t_inter_s);
+%     eig2 = eig(inter_s);
+%     
+%     A1 = pinv(t_inter_s)*intra_s + eye(DIM);
+%     A2 = inv_inter_s * intra_s + eye(DIM);
+%     logDet1 = spec_determin(A1, num1) + num1*sum(log(abs(eig1)));
+%     logDet2 = spec_determin(A2, num1) + num2*sum(log(abs(eig2)));
     
     %distance.data(i) = tmp2 - tmp1 + logDet2 - logDet1;
     distance.data(i) = tmp2 - tmp1;

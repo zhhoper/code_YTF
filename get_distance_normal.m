@@ -1,4 +1,4 @@
-function distance = get_distance_normal(pair, path, load_names, meanFeature, projection, A, G)
+function distance = get_distance_normal(pair, path, load_names, meanFeature, projection, A, G, type)
 % distane = get_distance_normal(pair, path, load_names, A, G)
 %
 % This function is used to compute the distance of two video faces under
@@ -15,10 +15,20 @@ distance.min = zeros(num,1);
 for i = 1 : num
     I1 = pair(i,1);
     I2 = pair(i,2);
-    f1 = load(strcat(path, load_names(I1)));
-    f2 = load(strcat(path, load_names(I2)));
-    f1 = f1';
-    f2 = f2';
+    f1 = load(strcat(path, load_names{I1}));
+    f2 = load(strcat(path, load_names{I2}));
+    
+    if type == 1
+        f1 = f1.VID_DESCS_LBP';
+        f2 = f2.VID_DESCS_LBP';
+    elseif type == 2
+        f1 = f1.VID_DESCS_FPLBP';
+        f2 = f2.VID_DESCS_FPLBP';
+    elseif type == 3
+        f1 = f1.VID_DESCS_CSLBP';
+        f2 = f2.VID_DESCS_CSLBP';
+    end
+    
     num1 = size(f1,1);
     num2 = size(f2,1);
     % project using pca
