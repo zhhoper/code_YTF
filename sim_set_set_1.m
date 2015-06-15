@@ -11,6 +11,7 @@ function distance = sim_set_set_1(pair, path, load_names, meanFeature, projectio
 % OUTPUT:
 % distance : the similarity score for every pair of data
 
+%% only update the mean
 % What if we select some number of frames that best describe the joint face
 num = size(pair,1);
 distance.label = pair(:,3);
