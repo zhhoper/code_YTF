@@ -47,7 +47,10 @@ for i = 1 : numValidation
     fprintf('Done!\n');
     
     fprintf('Computing the distance of two videos using proposed Joint Bayesian...\n');
-    distancePropose = sim_set_set_1(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
+    distancePropose1 = sim_point_set_1(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
+    distancePropose2 = sim_set_set_1(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
+    distancePropose3 = sim_set_set_2(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
+    distancePropose4 = sim_set_set_3(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
     fprintf('Done!\n');
     
     ori_intraPre = struct;
@@ -58,13 +61,21 @@ for i = 1 : numValidation
     [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
     [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
     fprintf('Done!\n');
+    save('ori_intraPre.mat', 'ori_intraPre');
+    save('ori_extraPre.mat', 'ori_extraPre');
     
     fprintf('Computing the precision for proposed Joint Bayesian...\n');
-    [proposed_intraPre, proposed_extrPre] = get_precision(distancePropose.data, distancePropose.label);
+    [proposed_intraPre1, proposed_extraPre1] = get_precision(distancePropose1.data, distancePropose1.label);
+    [proposed_intraPre2, proposed_extraPre2] = get_precision(distancePropose2.data, distancePropose2.label);
+    [proposed_intraPre3, proposed_extraPre3] = get_precision(distancePropose3.data, distancePropose3.label);
+    [proposed_intraPre4, proposed_extraPre4] = get_precision(distancePropose4.data, distancePropose4.label);
     fprintf('Done!\n');
     
+    save('proposed_intraPre.mat', 'proposed_intraPre');
+    save('proposed_extraPre.mat', 'proposed_extraPre');
+    
     fprintf('Draw the curve...\n');
-    [ori_pre, proposed_pre] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre, proposed_extrPre);
+    [ori_pre, proposed_pre] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre, proposed_extraPre);
     fprintf('Done!\n');
     
     fprintf('End of Validation 1!\n');
