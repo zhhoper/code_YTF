@@ -66,16 +66,27 @@ for i = 1 : numValidation
     
     fprintf('Computing the precision for proposed Joint Bayesian...\n');
     [proposed_intraPre1, proposed_extraPre1] = get_precision(distancePropose1.data, distancePropose1.label);
+    save('proposed_intraPre1.mat', 'proposed_intraPre1');
+    save('proposed_extraPre1.mat', 'proposed_extraPre1');
     [proposed_intraPre2, proposed_extraPre2] = get_precision(distancePropose2.data, distancePropose2.label);
+    save('proposed_intraPre2.mat', 'proposed_intraPre2');
+    save('proposed_extraPre2.mat', 'proposed_extraPre2');
     [proposed_intraPre3, proposed_extraPre3] = get_precision(distancePropose3.data, distancePropose3.label);
+    save('proposed_intraPre3.mat', 'proposed_intraPre3');
+    save('proposed_extraPre3.mat', 'proposed_extraPre3');
     [proposed_intraPre4, proposed_extraPre4] = get_precision(distancePropose4.data, distancePropose4.label);
+    save('proposed_intraPre4.mat', 'proposed_intraPre4');
+    save('proposed_extraPre4.mat', 'proposed_extraPre4');
     fprintf('Done!\n');
     
-    save('proposed_intraPre.mat', 'proposed_intraPre');
-    save('proposed_extraPre.mat', 'proposed_extraPre');
+    
+
     
     fprintf('Draw the curve...\n');
-    [ori_pre, proposed_pre] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre, proposed_extraPre);
+    [ori_pre1, proposed_pre1] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre1, proposed_extraPre1);
+    [ori_pre2, proposed_pre2] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre2, proposed_extraPre2);
+    [ori_pre3, proposed_pre3] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre3, proposed_extraPre3);
+    [ori_pre4, proposed_pre4] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre4, proposed_extraPre4);
     fprintf('Done!\n');
     
     fprintf('End of Validation 1!\n');
