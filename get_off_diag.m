@@ -27,9 +27,13 @@ for i = 1 : numSize
     
     if numOffSize ~= 0
         ind = get_index(numOffSize, i);
-        for j = 1 : length(ind)
+        for j = 1 : length(ind) - (i-1)
             numOff = inv_A.offDiag(ind(j)).num2;
             tmp = tmp + numOff*inv_A.offDiag(ind(j)).data;
+        end
+        for j = length(ind) - (i-1) + 1  : length(ind)
+            numOff = inv_A.offDiag(ind(j)).num1;
+            tmp = tmp + numOff*inv_A.offDiag(ind(j)).data';
         end
     end
     
