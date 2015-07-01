@@ -26,7 +26,8 @@ for i = 1 : numValidation
         fprintf('Done!\n');
     else
         fprintf('PCA to reduce dimension...\n');
-        [meanFeature, projection] = train_pca(path, videoLabel, load_names, type);
+        thr = 0.8;
+        [meanFeature, projection] = train_pca(path, videoLabel, load_names, thr, type);
         fprintf('Done!\n');
     end
     
@@ -37,7 +38,7 @@ for i = 1 : numValidation
         fprintf('Done!\n');
     else
         fprintf('Get inter and intra variance...\n');
-        [inter_s, intra_s] = get_var_video(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
+        [inter_s, intra_s] = get_var_video_step(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
         fprintf('Done!\n');
     end
     
@@ -51,6 +52,7 @@ for i = 1 : numValidation
     distancePropose2 = sim_set_set_1(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
     distancePropose3 = sim_set_set_2(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
     distancePropose4 = sim_set_set_3(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
+    distancePropose5 = sim_point_set_2(Splits(:, :, i), path, load_names, meanFeature, projection, inter_s, intra_s, type);
     fprintf('Done!\n');
     
     ori_intraPre = struct;
@@ -60,6 +62,7 @@ for i = 1 : numValidation
     [ori_intraPre.max, ori_extraPre.max] = get_precision(distanceOri.max, distanceOri.label);
     [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
     [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
+    [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
     fprintf('Done!\n');
     save('ori_intraPre.mat', 'ori_intraPre');
     save('ori_extraPre.mat', 'ori_extraPre');
@@ -77,16 +80,18 @@ for i = 1 : numValidation
     [proposed_intraPre4, proposed_extraPre4] = get_precision(distancePropose4.data, distancePropose4.label);
     save('proposed_intraPre4.mat', 'proposed_intraPre4');
     save('proposed_extraPre4.mat', 'proposed_extraPre4');
+    [proposed_intraPre5, proposed_extraPre5] = get_precision(distancePropose5.data, distancePropose5.label);
+    save('proposed_intraPre5.mat', 'proposed_intraPre5');
+    save('proposed_extraPre5.mat', 'proposed_extraPre5');
     fprintf('Done!\n');
     
-    
-
     
     fprintf('Draw the curve...\n');
     [ori_pre1, proposed_pre1] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre1, proposed_extraPre1);
     [ori_pre2, proposed_pre2] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre2, proposed_extraPre2);
     [ori_pre3, proposed_pre3] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre3, proposed_extraPre3);
     [ori_pre4, proposed_pre4] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre4, proposed_extraPre4);
+    [ori_pre5, proposed_pre5] = drawROC(ori_intraPre, ori_extraPre, proposed_intraPre5, proposed_extraPre5);
     fprintf('Done!\n');
     
     fprintf('End of Validation 1!\n');

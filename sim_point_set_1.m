@@ -94,10 +94,10 @@ for i = 1 : num
     A1 = pinv(t_inter_s)*intra_s + eye(DIM);
     A2 = inv_inter_s * intra_s + eye(DIM);
     logDet1 = spec_determin(A1, num1) + num1*sum(log(abs(eig1)));
-    logDet2 = spec_determin(A2, num1) + num2*sum(log(abs(eig2)));
+    logDet2 = spec_determin(A2, num1) + num1*sum(log(abs(eig2)));
     
+    %distance.data(i) = tmp2 - tmp1 + logDet2 - logDet1;
     distance.data(i) = tmp2 - tmp1 + logDet2 - logDet1;
-    %distance.data(i) = tmp2 - tmp1;
 end
 
 end

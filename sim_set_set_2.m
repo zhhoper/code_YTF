@@ -72,6 +72,10 @@ for i = 1 : num
     
     tmpIn1 = sum((f1 - repmat(meanF, num1,1)).^2,2);
     tmpIn2 = sum((f2 - repmat(meanF, num2,1)).^2,2);
+    
+%     tmpIn1 = sum((f1 - repmat(meanF + mean(epson,1), num1,1)).^2,2);
+%     tmpIn2 = sum((f2 - repmat(meanF + mean(epson,1), num2,1)).^2,2);
+    
     [~, In1] =sort(tmpIn1);
     [~, In2] = sort(tmpIn2);
     In1 = In1(end-numSelect+1:end);

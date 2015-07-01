@@ -64,7 +64,7 @@ for i = 1 : num
     joint_F = [f1;f2];
     totalNum = num1 + num2;
     [tmpF, tmpG] = inv_covariance(inter_s, intra_s, totalNum);
-    tmp_sum = sum(f1) + sum(f2);
+    tmp_sum = sum(f1, 1) + sum(f2, 1);
     meanF = (tmp_sum*tmpF' + totalNum*tmp_sum*tmpG')*inter_s';
     %epson= (joint_F*tmpF' + repmat(tmp_sum, totalNum, 1)*tmpG')*intra_s';
     
@@ -102,15 +102,15 @@ for i = 1 : num
         %pvarData1 = all_pvarData(num2).data;
     end
     
-    meanCondition = inter_s*(F2 + numSelect*G2)*sum(f2)';
+    meanCondition = inter_s*(F2 + numSelect*G2)*sum(f2,1)';
     meanCondition = meanCondition';
     center_f1 = f1 - repmat(meanCondition, numSelect, 1);
     
     t_inter_s = inter_s - varData2;
     [tF2, tG2] = inv_covariance(t_inter_s, intra_s, numSelect);
     
-    tmp1 = trace(center_f1*tF2*center_f1') + sum(center_f1)*tG2*sum(center_f1)';
-    tmp2 = trace(f1*F1*f1') + sum(f1)*G1*sum(f1)';
+    tmp1 = trace(center_f1*tF2*center_f1') + sum(center_f1, 1)*tG2*sum(center_f1, 1)';
+    tmp2 = trace(f1*F1*f1') + sum(f1, 1)*G1*sum(f1, 1)';
     
 %     eig1 = eig(t_inter_s);
 %     eig2 = eig(inter_s);

@@ -1,11 +1,15 @@
 function [faceLabel, videoLabel] = get_trainLabel(Splits, index, video_labels)
-% trainingName = get_trainName(Splits, i, video_names, path)
+% [faceLabel, videoLabel] = get_trainName(Splits, index, video_names, path)
 %
 % this function is used to get the training samples' label 
+% INPUT:
 % Splits : contains the spliting for training and testign
 % index : the set used for testing
 % video_names : name of the video
 % path : the path where we can load the feature
+% OUTPUT:
+% faceLabel : the face label used for training
+% videoLabel : the video label used for training
 
 numVal = size(Splits, 3);
 

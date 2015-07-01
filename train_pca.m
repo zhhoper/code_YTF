@@ -1,7 +1,16 @@
-function [meanFeature, projection] = train_pca(path, videoLabel, load_names, type)
+function [meanFeature, projection] = train_pca(path, videoLabel, load_names, thr, type)
 % [meanFeatuer, projection] = train_pca(path, videoLabel, load_names, type)
 %
 % This function is used to do pca on the feature
+% INPUT:
+% path : the path containing the feature of the video
+% videoLabel : index of videos that is used for training
+% load_names : the name of the corresponding video
+% thr : the percentage of energy we want to keep for pca
+% type : indicating which type of feature we want to use
+% OUTPUT:
+% meanFeature : the mean value of all the features
+% projection : the projection direction of PCA
 
 numVideos = length(videoLabel);
 
@@ -54,7 +63,6 @@ end
 [V, D] = eig(covMatrix);
 tmpD = diag(D);
 indicator = 0;
-thr = 0.70;
 total = sum(tmpD);
 i = 1;
 
@@ -68,4 +76,3 @@ while indicator ~= 1
 end
 
 projection = V(:,1: i);
-ccc = 0;

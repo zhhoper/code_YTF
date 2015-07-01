@@ -36,10 +36,10 @@ for i = 1 : numFaces
         elseif type == 3
             tmpFeature = tmp.VID_DESCS_CSLBP';
         end
-        tmpNum = size(tmpFeature,1);
-        countFrames = countFrames + tmpNum;
-        numFrameEachFace = numFrameEachFace + tmpNum;
-        tmpFeature = (tmpFeature - repmat(meanFeature, tmpNum, 1))*projection; 
+        tmpNum1 = size(tmpFeature,1);
+        countFrames = countFrames + tmpNum1;
+        numFrameEachFace = numFrameEachFace + tmpNum1;
+        tmpFeature = (tmpFeature - repmat(meanFeature, tmpNum1, 1))*projection; 
         meanEachFace(i,:) = meanEachFace(i,:) + sum(tmpFeature,1);
     end
     meanEachFace(i,:) = meanEachFace(i,:)/numFrameEachFace;

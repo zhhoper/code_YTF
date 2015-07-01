@@ -43,10 +43,18 @@ for i = 1 : num
     tmpF2 = repmat(tmpF2', num1, 1);
     
     tmp1 = tmpF1 + tmpF2 - 2*tmpF12;
-    tmp2 = triu(tmp1);
-    ind = tmp1 == tmp2;
-    t_distance = tmp1(ind);
-    t_distance = t_distance(:);
+%     tmp2 = triu(tmp1);
+%     ind = tmp1 == tmp2;
+%     t_distance = tmp1(ind);
+%     t_distance = t_distance(:);
+    
+    t_distance = tmp1(:);
+
+    % try to use mean feature
+    meanF1 = mean(f1, 1);
+    meanF2 = mean(f2, 1);
+    
+    distance.featureMean(i) = meanF1*A*meanF1' + meanF2*A*meanF2' - 2*meanF1*G*meanF2';
     distance.mean(i) = mean(t_distance);
     distance.max(i) = max(t_distance);
     distance.min(i) = min(t_distance);
