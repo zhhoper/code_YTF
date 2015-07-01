@@ -25,7 +25,7 @@ for i = 1 : numDiag
 end
 
 for i = 1 : numOffDiag
-    tmp1 = 2*inv_A.offDiag(i).num1* inv_A.offDiag(i).num2*data;
+    tmp1 = 2*inv_A.offDiag(i).num1* inv_A.offDiag(i).num2*inv_A.offDiag(i).data;
     inv_matrix = inv_matrix + tmp1;
 end
 

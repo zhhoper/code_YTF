@@ -28,7 +28,7 @@ for i = 1 : numSize
     tmpInd = ind(end - lastElem + 1 : end);
     for k = 1 : length(tmpInd)
         data = inv_cov.offDiag(tmpInd(k)).data;
-        tmpA = [tmpA, repmat(data, inv_cov.offDiag(tmpInd(k)).num2, inv_cov.offDiag(tmpInd(k)).num1)];
+        tmpA = [tmpA, repmat(data', inv_cov.offDiag(tmpInd(k)).num2, inv_cov.offDiag(tmpInd(k)).num1)];
     end
     tmpA = [tmpA, tmp];
     for k = 1 : length(ind) - lastElem

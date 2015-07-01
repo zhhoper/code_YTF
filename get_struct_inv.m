@@ -52,9 +52,9 @@ else
     tmpOffDiag = get_off_diag(inv_A, id_var, F, G, numD);
     
     % get the inv_value
-    inv_value.size = inv_A.size + 1;
-    inv_value.diag = inv_A.diag;
-    inv_value.offDiag = inv_A.offDiag;
+    inv_value.size = tmpValue.size + 1;
+    inv_value.diag = tmpValue.diag;
+    inv_value.offDiag = tmpValue.offDiag;
     
     numDiag = length(inv_value.diag);
     inv_value.diag(numDiag+1).F = F;
