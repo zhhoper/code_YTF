@@ -6,6 +6,8 @@ function [F, G] = inv_covariance(inter_s, intra_s, m)
 
 F = pinv(intra_s);
 G = -pinv(m*inter_s + intra_s)*inter_s*F; 
+F = (F + F')/2;
+G = (G + G')/2;
 end
 
 
