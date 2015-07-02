@@ -18,7 +18,7 @@ for i = 1 : numValidation
     [faceLabel, videoLabel] = get_trainLabel(Splits, i, video_labels);
     fprintf('Done!\n');
     
-    ind = 0;
+    ind = 1;
     if exist(strcat(matPath,'pcaResult.mat'), 'file') && ind
         fprintf('Loading PCA results...\n');
         load(strcat(matPath,'pcaResult.mat'));
@@ -30,6 +30,9 @@ for i = 1 : numValidation
         % keep 80% of the energy when doing PCA
         thr = 0.8; 
         [meanFeature, projection] = train_pca(path, videoLabel, load_names, thr, type);
+        pcaResult.mean = meanFeature;
+        pcaResult.projection = projection;
+        save(strcat(matPath, 'pcaResult.mat'), 'pcaResult');
         fprintf('Done!\n');
     end
     
@@ -54,9 +57,43 @@ for i = 1 : numValidation
         fprintf('Done!\n');
     end
     
-    
-    fprintf('Compute the distance of two videos using the model id + video + noise...\n');
-    distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, type);
+    [A, G] = get_AG(id.var, video.var + noise.var);
+    fprintf('Computing the distance of two videos using original Joint Bayesian...\n');
+    distanceOri = get_distance_normal(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, type);
     fprintf('Done!\n');
+    
+    
+    ori_intraPre = struct;
+    ori_extraPre = struct;
+    fprintf('Computing the precision for original Joint Bayesian...\n');
+    [ori_intraPre.mean, ori_extraPre.mean] = get_precision(distanceOri.mean, distanceOri.label);
+    [ori_intraPre.max, ori_extraPre.max] = get_precision(distanceOri.max, distanceOri.label);
+    [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
+    [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
+    [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
+    fprintf('Done!\n');
+    
+    fprintf('Computing the distance of two videos using the model id + video + noise...\n');
+    numFrames = 5;
+    distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, numFrames, type);
+    fprintf('Done!\n');
+    
+    fprintf('Computing the precision for our method...\n');
+    [pre_intra1, pre_extra1] = get_precision(distance.data1, distance.label);
+    fprintf('Done!\n');
+    
+    fprintf('Computing the precision for our method...\n');
+    [pre_intra2, pre_extra2] = get_precision(distance.data2, distance.label);
+    fprintf('Done!\n');    
+    
+%     figure;
+%     plot(pre_extra1, pre_intra1, 'r-');
+%     hold on;
+%     plot(pre_extra2, pre_intra2, 'b-');
+    
+    fprintf('Draw ROC curve...\n');
+    drawROC_multiple(ori_intraPre, ori_extraPre, pre_intra1, pre_extra1, pre_intra2, pre_extra2);
+    fprintf('Done!\n');
+    cccc = 0;
 end
     

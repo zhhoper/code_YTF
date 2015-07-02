@@ -63,7 +63,7 @@ end
 % we may ignore this assumption)
 % get the mean and variance for id
 id.mean = zeros(1, DIM);
-id.var = (meanEachFace - id.mean)'*(meanEachFace - id.mean)/numFaces;
+id.var = (meanEachFace - repmat(id.mean, numFaces, 1))'*(meanEachFace - repmat(id.mean, numFaces, 1))/numFaces;
 
 
 varVideo = zeros(DIM, DIM);
@@ -93,7 +93,7 @@ for i = 1 : numFaces
         tmpFeature = (tmpFeature - repmat(meanFeature, tmpNum1, 1))*projection; 
         tmpMean = mean(tmpFeature, 1);
         varVideo = varVideo + (tmpMean - meanEachFace(i,:))'*(tmpMean - meanEachFace(i,:));
-        varNoise = varNoise + (tmpFeature - tmpMean)'*(tmpFeature - tmpMean);
+        varNoise = varNoise + (tmpFeature - repmat(tmpMean, tmpNum1, 1))'*(tmpFeature - repmat(tmpMean, tmpNum1, 1));
     end
 end
 
