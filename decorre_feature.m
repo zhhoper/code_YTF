@@ -13,6 +13,7 @@ function def = decorre_feature(f, epson, numFrames)
 num = size(f,1);
 dim = size(f,2);
 
+%% using dual form to solve the constrained optimization problem
 % helper is used to fast compute the matrix we needed
 helper = epson*epson;
 
@@ -24,12 +25,17 @@ for i = startInd : num
     A = A + helper(i-numFrames : i-1, i - numFrames, i-1);
     b = b + helper(i-numFrames : i-1, i); 
 end
-% Aw = b
-W = A\b;
+tmpOne = ones(1, numFrames);
+B = pinv(A)*b;
+C = pinv(A)*tmpOne';
+lambda = (tmpOne*B)/(tmpOne*C);
+W = B - lambda*C;
 
+
+%% decorrelation
 def = zeros(num-numFrames, dim);
 for i = 1 : num - numFrames
-    def(i,:) = (f(i : i+numFrames-1, :)'*w)';
+    def(i,:) = (f(i : i+numFrames-1, :)'*W)';
 end
 
 end
