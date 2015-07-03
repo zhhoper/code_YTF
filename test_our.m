@@ -12,7 +12,12 @@ load_names = pase_name(video_names, 1);
 type = 1;
 
 matPath = 'keep_mat/';
+ori = struct;
+pre = struct;
+ori_best = struct;
+pre_best = struct;
 for i = 1 : numValidation
+    tic
     fprintf('Validation 1......\n');
     fprintf('Get training data label...\n')
     [faceLabel, videoLabel] = get_trainLabel(Splits, i, video_labels);
@@ -59,7 +64,8 @@ for i = 1 : numValidation
     
     [A, G] = get_AG(id.var, video.var + noise.var);
     fprintf('Computing the distance of two videos using original Joint Bayesian...\n');
-    distanceOri = get_distance_normal(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, type);
+    distanceOri = get_distance_select(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, id, video, noise, type);
+    %distanceOri = get_distance_normal(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, type);
     fprintf('Done!\n');
     
     
@@ -71,29 +77,55 @@ for i = 1 : numValidation
     [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
     [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
     [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
+    [ori_intraPre.selectMean, ori_extraPre.selectMean] = get_precision(distanceOri.selectMean, distanceOri.label);
+    [ori_intraPre.selectMin, ori_extraPre.selectMin] = get_precision(distanceOri.selectMin, distanceOri.label);
+    [ori_intraPre.selectJoint, ori_extraPre.selectJoint] = get_precision(distanceOri.selectJoint, distanceOri.label);
     fprintf('Done!\n');
     
+    %     fprintf('Computing the distance of two videos using the model id + video + noise...\n');
+    %     numFrames = 5;
+    %     distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, numFrames, type);
+    %     fprintf('Done!\n');
+    %
+    %     fprintf('Computing the precision for our method...\n');
+    %     [pre_intra1, pre_extra1] = get_precision(distance.data1, distance.label);
+    %     fprintf('Done!\n');
+    %
+    %     fprintf('Computing the precision for our method...\n');
+    %     [pre_intra2, pre_extra2] = get_precision(distance.data2, distance.label);
+    %     fprintf('Done!\n');
+    
+    %     figure;
+    %     plot(pre_extra1, pre_intra1, 'r-');
+    %     hold on;
+    %     plot(pre_extra2, pre_intra2, 'b-');
     fprintf('Computing the distance of two videos using the model id + video + noise...\n');
-    numFrames = 5;
-    distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, numFrames, type);
+    distance = get_distance_video(Splits(:,:,i), path, load_names, meanFeature, projection, id, video, noise, type);
     fprintf('Done!\n');
     
-    fprintf('Computing the precision for our method...\n');
-    [pre_intra1, pre_extra1] = get_precision(distance.data1, distance.label);
-    fprintf('Done!\n');
+    [pre_intra, pre_extra] = get_precision(distance.data, distance.label);
     
-    fprintf('Computing the precision for our method...\n');
-    [pre_intra2, pre_extra2] = get_precision(distance.data2, distance.label);
-    fprintf('Done!\n');    
-    
-%     figure;
-%     plot(pre_extra1, pre_intra1, 'r-');
-%     hold on;
-%     plot(pre_extra2, pre_intra2, 'b-');
+
     
     fprintf('Draw ROC curve...\n');
-    drawROC_multiple(ori_intraPre, ori_extraPre, pre_intra1, pre_extra1, pre_intra2, pre_extra2);
+    [best_ori, best_pro1, best_pro2] = drawROC_multiple(ori_intraPre, ori_extraPre,...
+        pre_intra, pre_extra,...
+        ori_intraPre.selectJoint, ori_extraPre.selectJoint);
+    
     fprintf('Done!\n');
     cccc = 0;
+    
+    close all;
+    ori(i).ori_intaPre = ori_intraPre;
+    ori(i).ori_extraPre = ori_extraPre;
+    pre(i).intra1 = pre_intra1;
+    pre(i).intra2 = pre_intra2;
+    pre(i).extra1 = pre_extra1;
+    pre(i).extra2 = pre_extra2;
+    ori_best(i).data = best_ori;
+    pre_best(i).pro1 = best_pro1;
+    pre_best(i).pro2 = best_pro2;
+    toc
+    ccc = 0;
 end
     

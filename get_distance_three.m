@@ -23,6 +23,8 @@ distance = struct;
 distance.label = pair(:,3);
 distance.data1 = zeros(num,1);
 distance.data2 = zeros(num,1);
+distance.num1 = zeros(num,1);
+distance.num2 = zeros(num,1);
 
 for i = 1 : num
     I1 = pair(i,1);
@@ -50,6 +52,8 @@ for i = 1 : num
     f1 = (f1 - repmat(meanFeature, num1, 1))*projection;
     f2 = (f2 - repmat(meanFeature, num2, 1))*projection;
     
+    distance.num1(i) = num1;
+    distance.num2(i) = num2;
     
     tf1 = f1;
     tf2 = f2;

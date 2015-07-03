@@ -43,10 +43,6 @@ for i = 1 : num
     tmpF2 = repmat(tmpF2', num1, 1);
     
     tmp1 = tmpF1 + tmpF2 - 2*tmpF12;
-%     tmp2 = triu(tmp1);
-%     ind = tmp1 == tmp2;
-%     t_distance = tmp1(ind);
-%     t_distance = t_distance(:);
     
     t_distance = tmp1(:);
 
