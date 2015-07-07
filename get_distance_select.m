@@ -21,7 +21,7 @@ distance.selectNum1 = zeros(num,1);
 distance.selectNum2 = zeros(num,1);
 distance.selectFeatureMean = zeros(num,1);
 distance.selectAdapt = zeros(num,1);
-distance.combine = zeros(num,1);
+%distance.combine = zeros(num,1);
 numSelect = 15;
 
 for i = 1 : num
@@ -48,33 +48,33 @@ for i = 1 : num
     f2 = (f2 - repmat(meanFeature, num2, 1))*projection;
     
     %%
-    W1 = ones(num1, 1)/num1;
-    W2 = ones(num2, 1)/num2;
-    tmpOnes1 = ones(1, num1);
-    tmpOnes2 = ones(1, num2);
-    thr = 1;
-    max_count = 50;
-    diff = inf;
-    count = 0;
-    while diff > thr && count < max_count
-        count = count + 1;
-        oldW1 = W1;
-        oldW2 = W2;
-        
-        tvA1 = pinv(f1*A*f1');
-        tB1 = f1*G*f2'*W2;
-        W1 = tvA1*tB1 - (tmpOnes1*tvA1*tB1 -1)/(tmpOnes1*tvA1*tmpOnes1')*tvA1*tmpOnes1';
-        
-        tvA2 = pinv(f2*A*f2');
-        tB2 = f2*G*f1'*W1;
-        W2 = tvA2*tB2 - (tmpOnes2*tvA2*tB2 -1)/(tmpOnes2*tvA2*tmpOnes2')*tvA2*tmpOnes2';
-        
-        diff = norm(W1 - oldW1, 'fro') + norm(W2 - oldW2, 'fro');
-    end
-    
-    combine1 = (f1'*W1)';
-    combine2 = (f2'*W2)';
-    distance.combine(i) = combine1*A*combine1' + combine2*A*combine2' - 2*combine1*G*combine2';
+%     W1 = ones(num1, 1)/num1;
+%     W2 = ones(num2, 1)/num2;
+%     tmpOnes1 = ones(1, num1);
+%     tmpOnes2 = ones(1, num2);
+%     thr = 1;
+%     max_count = 50;
+%     diff = inf;
+%     count = 0;
+%     while diff > thr && count < max_count
+%         count = count + 1;
+%         oldW1 = W1;
+%         oldW2 = W2;
+%         
+%         tvA1 = pinv(f1*A*f1');
+%         tB1 = f1*G*f2'*W2;
+%         W1 = tvA1*tB1 - (tmpOnes1*tvA1*tB1 -1)/(tmpOnes1*tvA1*tmpOnes1')*tvA1*tmpOnes1';
+%         
+%         tvA2 = pinv(f2*A*f2');
+%         tB2 = f2*G*f1'*W1;
+%         W2 = tvA2*tB2 - (tmpOnes2*tvA2*tB2 -1)/(tmpOnes2*tvA2*tmpOnes2')*tvA2*tmpOnes2';
+%         
+%         diff = norm(W1 - oldW1, 'fro') + norm(W2 - oldW2, 'fro');
+%     end
+%     
+%     combine1 = (f1'*W1)';
+%     combine2 = (f2'*W2)';
+%     distance.combine(i) = combine1*A*combine1' + combine2*A*combine2' - 2*combine1*G*combine2';
     
     %%
     tmpF1 = diag(f1*A*f1');

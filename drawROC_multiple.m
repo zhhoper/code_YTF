@@ -26,11 +26,11 @@ hold on;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 plot(proposed_extraPre1, proposed_intraPre1, 'r-', 'LineWidth', line_width);
 hold on;
-plot(proposed_extraPre2, proposed_intraPre2, 'r.-', 'LineWidth', line_width);
+plot(proposed_extraPre2, proposed_intraPre2, 'k.-', 'LineWidth', line_width);
 
 legend(sprintf('mean: %f', best_ori.mean), sprintf('min: %f', best_ori.min), ...
     sprintf('max: %f', best_ori.max), sprintf('median: %f', best_ori.median),...
-    sprintf('fmean: %f', best_ori.fmean), sprintf('select_15_mean: %f', best_pro1),...
-    sprintf('Select_combine_15: %f', best_pro2));
+    sprintf('fmean: %f', best_ori.fmean), sprintf('feature_mean: %f', best_pro1),...
+    sprintf('adapted: %f', best_pro2));
 
 end
