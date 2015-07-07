@@ -79,7 +79,10 @@ for i = 1 : numValidation
     [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
     [ori_intraPre.selectMean, ori_extraPre.selectMean] = get_precision(distanceOri.selectMean, distanceOri.label);
     [ori_intraPre.selectMin, ori_extraPre.selectMin] = get_precision(distanceOri.selectMin, distanceOri.label);
-    [ori_intraPre.selectJoint, ori_extraPre.selectJoint] = get_precision(distanceOri.selectJoint, distanceOri.label);
+    [ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean] = get_precision(distanceOri.selectFeatureMean, distanceOri.label);
+    [ori_intraPre.selectAdapt, ori_extraPre.selectAdapt] = get_precision(distanceOri.selectAdapt, distanceOri.label);
+    %[ori_intraPre.selectJoint, ori_extraPre.selectJoint] = get_precision(distanceOri.selectJoint, distanceOri.label);
+    [ori_intraPre.combine, ori_extraPre.combine] = get_precision(distanceOri.combine, distanceOri.label);
     fprintf('Done!\n');
     
     %     fprintf('Computing the distance of two videos using the model id + video + noise...\n');
@@ -99,18 +102,19 @@ for i = 1 : numValidation
     %     plot(pre_extra1, pre_intra1, 'r-');
     %     hold on;
     %     plot(pre_extra2, pre_intra2, 'b-');
-    fprintf('Computing the distance of two videos using the model id + video + noise...\n');
-    distance = get_distance_video(Splits(:,:,i), path, load_names, meanFeature, projection, id, video, noise, type);
-    fprintf('Done!\n');
-    
-    [pre_intra, pre_extra] = get_precision(distance.data, distance.label);
+    %%
+%     fprintf('Computing the distance of two videos using the model id + video + noise...\n');
+%     distance = get_distance_video(Splits(:,:,i), path, load_names, meanFeature, projection, id, video, noise, type);
+%     fprintf('Done!\n');
+%     
+%     [pre_intra, pre_extra] = get_precision(distance.data, distance.label);
     
 
     
     fprintf('Draw ROC curve...\n');
     [best_ori, best_pro1, best_pro2] = drawROC_multiple(ori_intraPre, ori_extraPre,...
-        pre_intra, pre_extra,...
-        ori_intraPre.selectJoint, ori_extraPre.selectJoint);
+        ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean,...
+        ori_intraPre.combine, ori_extraPre.combine);
     
     fprintf('Done!\n');
     cccc = 0;
