@@ -23,19 +23,19 @@ ccc= 0;
 tmp3 = [a, b; b, a];
 tmp4 = [c, c; c, c; c,c];
 tmp = [tmp, tmp4; tmp4', tmp3];
-% tmp1 = inv(tmp);
-% tmp2 = get_struct_inv(id_var, video_var, noise_var,[3,2]);
-% tmp3 = get_full_matrix(tmp2);
-% norm(tmp1 - tmp3, 'fro')
+tmp1 = inv(tmp);
+tmp2 = get_struct_inv(id_var, video_var, noise_var,[3,2]);
+tmp3 = get_full_matrix(tmp2);
+norm(tmp1 - tmp3, 'fro')
 ccc = 0;
 
 tmp3 = [a, b, b, b; b, a, b, b; b, b, a, b; b, b, b, a];
 tmp4 = [c, c, c, c; c, c, c, c; c, c, c , c; c, c, c, c; c, c, c, c];
 tmp = [tmp, tmp4; tmp4', tmp3];
-% tmp1 = inv(tmp);
-% tmp2 = get_struct_inv(id_var, video_var, noise_var, [3,2,4]);
-% tmp3 = get_full_matrix(tmp2);
-% norm(tmp1 - tmp3, 'fro')
+tmp1 = inv(tmp);
+tmp2 = get_struct_inv(id_var, video_var, noise_var, [3,2,4]);
+tmp3 = get_full_matrix(tmp2);
+norm(tmp1 - tmp3, 'fro')
 cccc = 0;
 
 tmp3 = [a, b, b; b, a, b; b, b, a];

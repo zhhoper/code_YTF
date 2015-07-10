@@ -54,8 +54,8 @@ for i = 1 : numValidation
     else
         fprintf('Get inter and intra variance...\n');
         % use the most simple case when training, no EM, no decorrelation
-        %[id, video, noise] = get_var_video_simple(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
-        [id, video, noise] = get_var_video_decorrelate(path, faceLabel, videoLabel, load_names, type, meanFeature, projection, numFrames);
+        [id, video, noise] = get_var_video_simple(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
+        %[id, video, noise] = get_var_video_decorrelate(path, faceLabel, videoLabel, load_names, type, meanFeature, projection, numFrames);
 %         % use EM for training but with no decorrelation
 %         [id, video, noise] = get_var_video_EM(path, faceLabel, videoLabel, load_names, type, meanFeature, projection);
 %         % Decorrelate frames but with no EM
@@ -66,42 +66,45 @@ for i = 1 : numValidation
     end
     
     %% compute distance based on single frames
-%     [A, G] = get_AG(id.var, video.var + noise.var);
-%     fprintf('Computing the distance of two videos using original Joint Bayesian...\n');
-%     distanceOri = get_distance_select(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, id, video, noise, type);
-%     %distanceOri = get_distance_normal(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, type);
-%     fprintf('Done!\n');
+    [A, G] = get_AG(id.var, video.var + noise.var);
+    fprintf('Computing the distance of two videos using original Joint Bayesian...\n');
+    distanceOri = get_distance_select(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, id, video, noise, type);
+    %distanceOri = get_distance_normal(Splits(:, :, i), path, load_names, meanFeature, projection, A, G, type);
+    fprintf('Done!\n');
     
     
-%     ori_intraPre = struct;
-%     ori_extraPre = struct;
-%     fprintf('Computing the precision for original Joint Bayesian...\n');
-%     [ori_intraPre.mean, ori_extraPre.mean] = get_precision(distanceOri.mean, distanceOri.label);
-%     [ori_intraPre.max, ori_extraPre.max] = get_precision(distanceOri.max, distanceOri.label);
-%     [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
-%     [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
-%     [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
-%     [ori_intraPre.selectMean, ori_extraPre.selectMean] = get_precision(distanceOri.selectMean, distanceOri.label);
-%     [ori_intraPre.selectMin, ori_extraPre.selectMin] = get_precision(distanceOri.selectMin, distanceOri.label);
-%     [ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean] = get_precision(distanceOri.selectFeatureMean, distanceOri.label);
-%     [ori_intraPre.selectAdapt, ori_extraPre.selectAdapt] = get_precision(distanceOri.selectAdapt, distanceOri.label);
-%     %[ori_intraPre.selectJoint, ori_extraPre.selectJoint] = get_precision(distanceOri.selectJoint, distanceOri.label);
-%     [ori_intraPre.combine, ori_extraPre.combine] = get_precision(distanceOri.combine, distanceOri.label);
+    ori_intraPre = struct;
+    ori_extraPre = struct;
+    fprintf('Computing the precision for original Joint Bayesian...\n');
+    [ori_intraPre.mean, ori_extraPre.mean] = get_precision(distanceOri.mean, distanceOri.label);
+    [ori_intraPre.max, ori_extraPre.max] = get_precision(distanceOri.max, distanceOri.label);
+    [ori_intraPre.min, ori_extraPre.min] = get_precision(distanceOri.min, distanceOri.label);
+    [ori_intraPre.median, ori_extraPre.median] = get_precision(distanceOri.median, distanceOri.label);
+    [ori_intraPre.fmean, ori_extraPre.fmean] = get_precision(distanceOri.featureMean, distanceOri.label);
+    [ori_intraPre.selectMean, ori_extraPre.selectMean] = get_precision(distanceOri.selectMean, distanceOri.label);
+    %[ori_intraPre.selectMin, ori_extraPre.selectMin] = get_precision(distanceOri.selectMin, distanceOri.label);
+    [ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean] = get_precision(distanceOri.selectFeatureMean, distanceOri.label);
+    [ori_intraPre.selectAdapt, ori_extraPre.selectAdapt] = get_precision(distanceOri.selectAdapt, distanceOri.label);
+    %[ori_intraPre.selectJoint, ori_extraPre.selectJoint] = get_precision(distanceOri.selectJoint, distanceOri.label);
+    %[ori_intraPre.withoutCross, ori_extraPre.withoutCross] = get_precision(distanceOri.withoutCross, distanceOri.label);
+    %[ori_intraPre.withoutCross, ori_extraPre.withoutCross] = get_precision(distanceOri.withoutCross, distanceOri.label);
+    [ori_intraPre.combine, ori_extraPre.combine] = get_precision(distanceOri.combine, distanceOri.label);
+    [ori_intraPre.combine_adapt, ori_extraPre.combine_adapt] = get_precision(distanceOri.combine_adapt, distanceOri.label);
 %     fprintf('Done!\n');
    
     %%
     %     fprintf('Computing the distance of two videos using the model id + video + noise...\n');
 
-    distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, numFrames, type);
-    fprintf('Done!\n');
-    
-    fprintf('Computing the precision for our method...\n');
-    [pre_intra1, pre_extra1] = get_precision(distance.data1, distance.label);
-    fprintf('Done!\n');
-    
-    fprintf('Computing the precision for our method...\n');
-    [pre_intra2, pre_extra2] = get_precision(distance.data2, distance.label);
-    fprintf('Done!\n');
+%     distance = get_distance_three(Splits(:, :, i), path, load_names, meanFeature, projection, id, video, noise, numFrames, type);
+%     fprintf('Done!\n');
+%     
+%     fprintf('Computing the precision for our method...\n');
+%     [pre_intra1, pre_extra1] = get_precision(distance.data1, distance.label);
+%     fprintf('Done!\n');
+%     
+%     fprintf('Computing the precision for our method...\n');
+%     [pre_intra2, pre_extra2] = get_precision(distance.data2, distance.label);
+%     fprintf('Done!\n');
     
     %     figure;
     %     plot(pre_extra1, pre_intra1, 'r-');
@@ -117,10 +120,10 @@ for i = 1 : numValidation
 
     
     fprintf('Draw ROC curve...\n');
-    [best_ori, best_pro1, best_pro2] = drawROC_multiple(ori_intraPre, ori_extraPre,...
-        ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean,...
-        ori_intraPre.selectAdapt, ori_extraPre.selectAdapt);
-    
+%     [best_ori, best_pro1, best_pro2] = drawROC_multiple(ori_intraPre, ori_extraPre,...
+%         ori_intraPre.selectFeatureMean, ori_extraPre.selectFeatureMean,...
+%         ori_intraPre.selectAdapt, ori_extraPre.selectAdapt);
+    best_ori = drawROC_new(ori_intraPre, ori_extraPre);
     fprintf('Done!\n');
     cccc = 0;
     
